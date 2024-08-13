@@ -47,6 +47,32 @@ const Table = ({ refresh, setRefresh }) => {
     }
   }
 
+  function handleDeleteAll(){
+    let conf = window.confirm("Apakah Anda Yakin Menghapus Semua Data ?")
+    if (!conf) return
+    supabase.from("mahasiswa").delete().in("id",selectedRows)
+    .then(res=>{
+      setRefresh(prev=>prev=!prev)
+    });
+  }
+
+  function handleMultipleSelect(event){
+    let checked=event.target.checked
+    let id = parseInt(event.target.id)
+
+    if (checked){
+      setSelectedRows(prev=>prev=[...prev,id])
+    }
+    else { 
+      let filterId = selectedRows.filter(event => event !== id)
+      setSelectedRows(filterId)
+     }
+  }
+
+  useEffect(()=>{
+    console.log(selectedRows)
+  }, [selectedRows])
+
   useEffect(() => {
     supabase.from("mahasiswa").select("*").then(res => {
       setDataMhs(res.data);
@@ -55,15 +81,21 @@ const Table = ({ refresh, setRefresh }) => {
   
   return (
     <div className="w-full overflow-x-auto mt-5">
+      <div className='flex gap-4'>
       <button className="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80" onClick={generateData} disabled={loading}>
         Generate Data
       </button>
+
+     {selectedRows.length!=0 && (
+       <button className='px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-red-600 rounded-lg hover:bg-red-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"' onClick={handleDeleteAll}>Delete all Data</button>
+     )}
+      </div>
       <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
         <thead className="bg-blue-500 text-white uppercase text-sm leading-normal">
           <tr>
             <th className="py-3 px-6 text-left">
               <label htmlFor="all">
-                <input type="checkbox" name="" id="all" className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out" onChange={handleSelectAll} />
+                <input type="checkbox" name="" id="all" className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out" onChange={handleSelectAll} checked={selectedRows.length===dataMhs.length&&selectedRows.length!=0} />
               </label>
             </th>
             <th className="py-3 px-6 text-left">ID</th>
@@ -79,7 +111,7 @@ const Table = ({ refresh, setRefresh }) => {
             <tr key={index} className={`border-b border-gray-200 hover:bg-gray-100 ${index % 2 === 0 ? 'bg-slate-100' : 'bg-white'}`}>
               <td className="py-3 px-6 text-left">
                 <label htmlFor={e.id}>
-                  <input type="checkbox" name="" id={e.id} className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked={selectedRows.includes(e.id)}/>
+                  <input type="checkbox" name="" id={e.id} className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out" checked={selectedRows.includes(e.id)} onChange={handleMultipleSelect} />
                 </label>
               </td>
               <td className="py-3 px-6 text-left">{e.id}</td>
