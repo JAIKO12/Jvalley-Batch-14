@@ -1,8 +1,8 @@
 import { Menu } from 'antd'
 import React, { useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { AiOutlineAudit, AiOutlineDashboard, AiOutlineMenu, AiOutlineSetting, AiOutlineClose } from "react-icons/ai"
-
+import { AiOutlineAudit, AiOutlineDashboard, AiOutlineMenu, AiOutlineSetting, AiOutlineClose, AiOutlineLogout } from "react-icons/ai"
+import supabase from '../connector'
 const Layout = () => {
     const navigate = useNavigate()
     const location = useLocation()
@@ -38,6 +38,26 @@ const Layout = () => {
             icon:<AiOutlineSetting/>,
             onClick: ()=>{
                 navigate("/settings")
+            }
+        },
+
+        {
+            key:'/logout',
+            label:'Logout',
+            icon:<AiOutlineLogout/>,
+            onClick: ()=>{
+                let conf = window.confirm("Apakah anda ingin Logout")
+                if (!conf) {
+                    return
+                }
+            supabase.auth.signOut()
+            .then((res)=>{
+            alert("Anda berhasil Logout")
+            navigate("/")
+            })
+            },
+            style: {
+             marginTop:"370px"
             }
         }
     ]

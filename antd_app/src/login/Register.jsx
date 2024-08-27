@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import {Button, Checkbox, Form, Input } from 'antd';
 import supabase from '../connector';
 import AlertMessage from '../components/Alert';
+import { NavLink } from 'react-router-dom';
 const Register = () => {
   
   const [errPas, setErrPas] = useState(false)
@@ -128,6 +129,7 @@ const Register = () => {
             Submit
           </Button>
         </Form.Item>
+        <NavLink to={"/"} className=' text-blue-500 relative left-9'>You Have Account? SignIn Here</NavLink>
       </Form>
     </div>
   </div>
