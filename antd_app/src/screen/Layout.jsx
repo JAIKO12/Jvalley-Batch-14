@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { AiOutlineAudit, AiOutlineDashboard, AiOutlineMenu, AiOutlineSetting, AiOutlineClose, AiOutlineLogout } from "react-icons/ai"
 import supabase from '../connector'
+import MenuComponent from '../components/Menu'
 const Layout = () => {
     const navigate = useNavigate()
     const location = useLocation()
@@ -76,7 +77,8 @@ const Layout = () => {
         </div>
 
         {/* right content */}
-        <div className={`flex-1 h-[2000px] transition-all  duration-[350ms] ${collapsed ? 'ml-[100px]' : 'ml-[210px]'}`} >
+        <div className={`flex-1 h-[2000px] transition-all   duration-[350ms] ${collapsed ? 'ml-[100px]' : 'ml-[210px]'}`} >
+        <MenuComponent/>
         <Outlet/>
         </div>
         

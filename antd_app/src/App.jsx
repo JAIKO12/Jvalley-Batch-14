@@ -5,23 +5,28 @@ import Register from './login/Register'
 import Layout from './screen/Layout'
 import supabase from './connector'
 import ListMahasiswa from './mahasiswa/ListMahasiswa'
+import SpinComponent from './components/Spin'
 
 
 const App = () => {
-
   const [session, setSession] = useState(false)
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
+      setLoading(false)
     })
-
+    
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
+ 
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
   if(!session) {
     return (
@@ -29,6 +34,14 @@ const App = () => {
         <Route path='/' element={<Login/>} />
         <Route path='/register' element={<Register/>}/>
       </Routes>
+    )
+  }
+
+  if (loading) {
+    return (
+    <div className='w-screen h-screen flex justify-center items-center bg-slate-100'>
+      <SpinComponent/>
+    </div>
     )
   }
 
